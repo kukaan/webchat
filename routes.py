@@ -7,6 +7,10 @@ def index():
     list = messages.get_list()
     return render_template("index.html", count=len(list), messages=list)
 
+@app.route("/new")
+def new():
+    return render_template("new.html")
+
 @app.route("/send", methods=["POST"])
 def send():
     content = request.form["content"]
@@ -26,6 +30,11 @@ def login():
             return redirect("/")
         else:
             return render_template("error.html",message="Väärä tunnus tai salasana")
+
+@app.route("/logout")
+def logout():
+    users.logout()
+    return redirect("/")
 
 @app.route("/register", methods=["GET","POST"])
 def register():
