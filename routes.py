@@ -48,3 +48,17 @@ def register():
         else:
             return render_template("error.html",message="Rekisteröinti ei onnistunut")
 
+@app.route("/profile/<int:id>")
+def profile(id):
+    allow = False
+    if users.is_admin():
+        allow = True
+    elif users.user_id() == id:
+        allow = True
+    if allow:
+        user_id = users.user_id()
+        username = users.username()
+        is_admin = users.is_admin()
+        return render_template("profile.html", user_id=user_id, username=username, is_admin=is_admin)
+    if not allow:
+        return render_template("error.html",message="Ei oikeutta nähdä sivua")
