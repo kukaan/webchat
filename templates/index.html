@@ -1,4 +1,16 @@
-Tervetuloa!
+{{ count }} message(s)
+<hr>
+{% for message in messages %}
+<i>Message:</i> {{ message[0] }}
 <p>
-Olet sivuston {{ counter }}. käyttäjä
-
+<i>Sender:</i> {{ message[1] }}
+<p>
+<i>Time:</i> {{ message[2].strftime("%Y-%m-%d %H:%M:%S") }}
+<hr>
+{% endfor %}
+{% if session.user_id %}
+You are logged in.
+<a href="/new">Send</a> | <a href="/logout">Log out</a>
+{% else %}
+<a href="/login">Log in</a>
+{% endif %}
