@@ -1,4 +1,16 @@
-{{ count }} message(s)
+<h1>WebChat</h1>
+{% if session.user_id %}
+    You are logged in as {{ session.username }}.
+    | <a href="/new">Send a new message</a>
+    | <a href="/myprofile">Profile</a>
+    | <a href="/logout">Log out</a>
+{% else %}
+    <a href="/login">Log in</a>
+{% endif %}
+<p>
+<a href="/threads">Check out the new Threads page (WIP)</a>
+<hr>
+<h3>{{ count }} message(s)</h3>
 <hr>
 {% for message in messages %}
     <i>Message:</i> {{ message[0] }}
@@ -15,11 +27,3 @@
     {% endif %}
     <hr>
 {% endfor %}
-    {% if session.user_id %}
-    You are logged in.
-    | <a href="/new">Send</a>
-    | <a href="/myprofile">Profile</a>
-    | <a href="/logout">Log out</a>
-{% else %}
-    <a href="/login">Log in</a>
-{% endif %}

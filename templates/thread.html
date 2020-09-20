@@ -1,0 +1,55 @@
+<h1>WebChat</h1>
+{% if session.user_id %}
+    You are logged in as {{ session.username }}.
+    | <a href="/myprofile">Profile</a>
+    | <a href="/logout">Log out</a>
+{% else %}
+    <a href="/login">Log in</a>
+{% endif %}
+<i>Topic:</i> {{ thread_attributes[0] }}
+<p>
+{% if session.user_id == thread_attributes[1] %}
+    <a href="/thread/{{ id }}/delete">Delete thread</a>
+{% endif %}
+<p>
+{{ count }} message(s)
+<hr>
+{% for message in messages %}
+    <i>Message:</i> {{ message[0] }}
+    <p>
+    <i>Sender:</i> {{ message[1] }}
+    <p>
+    <i>Time:</i> {{ message[2].strftime("%Y-%m-%d %H:%M:%S") }} UTC
+    <p>
+    {% if session.is_admin %}
+    <i>Visibility:</i> {{ message[5] }} |
+    {% endif %}
+    {% if session.user_id == message[3] %}
+    <a href="/deletemessage/{{ message[4] }}">Delete</a>
+    {% endif %}
+    <hr>
+{% endfor %}
+{% if session.user_id %}
+    <form action="/thread/{{ id }}/reply" method="post">
+        <input type="hidden" name="id" value="{{ id }}">
+        Reply to thread (max 1000 characters): <br>
+        <textarea name="content" rows="3" cols="40"></textarea>
+        <br>
+        <input type="submit" value="Send">
+    </form>
+    <!--
+        TODO: fix alert script
+    -->
+    <script>
+        function check(form) {<input type="hidden" name="id" value="{{ id }}">
+            if (form.content.value.length > 1000) {
+                alert("The message is too long");
+                return false;
+            }
+            return true;
+        }
+    </script>
+    <p>
+{% else %}
+    <a href="/login">Log in to reply to this thread</a>
+{% endif %}

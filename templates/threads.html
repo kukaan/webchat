@@ -1,0 +1,27 @@
+<h1>WebChat</h1>
+{% if session.user_id %}
+    You are logged in as {{ session.username }}.
+    | <a href="/newthread">Create a thread</a>
+    | <a href="/myprofile">Profile</a>
+    | <a href="/logout">Log out</a>
+{% else %}
+    <a href="/login">Log in</a>
+{% endif %}
+<hr>
+<h3>{{ count }} threads(s)</h3>
+<hr>
+{% for thread in threads %}
+    <i>Topic:</i> <a href="/thread/{{ thread[4] }}">{{ thread[0] }}</a>
+    <p>
+    <i>Creator:</i> {{ thread[1] }}
+    <p>
+    <i>Time:</i> {{ thread[2].strftime("%Y-%m-%d %H:%M:%S") }} UTC
+    <p>
+    {% if session.is_admin %}
+    <i>Visibility:</i> {{ thread[5] }} |
+    {% endif %}
+    {% if session.user_id == thread[3] %}
+    <a href="/deletethread/{{ thread[4] }}">Delete thread</a>
+    {% endif %}
+    <hr>
+{% endfor %}

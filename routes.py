@@ -87,3 +87,47 @@ def deletemessage(id):
     else:
         return render_template("error.html",message="Message deletion failed")
 
+@app.route("/thread/<int:id>")
+def thread(id):
+    if users.is_admin():
+        list = messages.get_thread_with_invisible(id)
+    else:
+        list = messages.get_thread(id)
+    thread_attributes = messages.get_thread_attributes(id)
+    return render_template("thread.html", count=len(list), messages=list, id=id, thread_attributes=thread_attributes)
+
+@app.route("/newthread", methods=["GET","POST"])
+def newthread():
+    if request.method == "GET":
+        return render_template("newthread.html")
+    if request.method == "POST":
+        topic = request.form["topic"]
+        if len(topic) > 30:
+            return render_template("error.html", message="The topic is too long")
+        if messages.add_thread(topic):
+            return redirect("threads")
+        else:
+            return render_template("error.html",message="Thread creation failed")
+
+@app.route("/threads")
+def threads():
+    if users.is_admin():
+        list = messages.get_threads_with_invisible()
+    else:
+        list = messages.get_threads()
+    return render_template("threads.html", count=len(list), threads=list)
+
+@app.route("/thread/<int:id>/delete")
+def deletethread(id):
+    if messages.hide_thread(id):
+        return redirect("threads")
+    else:
+        return render_template("error.html",message="Thread deletion failed")
+
+@app.route("/thread/<int:id>/reply", methods=["POST"])
+def reply(id):
+    content = request.form["content"]
+    if messages.reply(id, content):
+        return redirect("/thread/"+str(id))
+    else:
+        return render_template("error.html",message="Sending message failed")
