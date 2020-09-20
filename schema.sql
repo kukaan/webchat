@@ -4,10 +4,21 @@ CREATE TABLE users (
     password TEXT,
     is_admin BOOLEAN
 );
+CREATE TABLE threads (
+    id SERIAL PRIMARY KEY,
+    topic TEXT,
+    user_id INTEGER REFERENCES users,
+    created_at TIMESTAMP,
+    edited_at TIMESTAMP,
+    visible BOOLEAN
+);
 CREATE TABLE messages (
     id SERIAL PRIMARY KEY,
     content TEXT,
     user_id INTEGER REFERENCES users,
-    sent_at TIMESTAMP
+    created_at TIMESTAMP,
+    edited_at TIMESTAMP,
+    visible BOOLEAN,
+    thread_id INTEGER REFERENCES threads
 );
 

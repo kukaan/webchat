@@ -1,18 +1,25 @@
 {{ count }} message(s)
 <hr>
 {% for message in messages %}
-<i>Message:</i> {{ message[0] }}
-<p>
-<i>Sender:</i> {{ message[1] }}
-<p>
-<i>Time:</i> {{ message[2].strftime("%Y-%m-%d %H:%M:%S") }} UTC
-<hr>
+    <i>Message:</i> {{ message[0] }}
+    <p>
+    <i>Sender:</i> {{ message[1] }}
+    <p>
+    <i>Time:</i> {{ message[2].strftime("%Y-%m-%d %H:%M:%S") }} UTC
+    <p>
+    {% if session.is_admin %}
+    <i>Visibility:</i> {{ message[5] }} |
+    {% endif %}
+    {% if session.user_id == message[3] %}
+    <a href="/deletemessage/{{ message[4] }}">Delete</a>
+    {% endif %}
+    <hr>
 {% endfor %}
-{% if session.user_id %}
-You are logged in.
-| <a href="/new">Send</a>
-| <a href="/myprofile">Profile</a>
-| <a href="/logout">Log out</a>
+    {% if session.user_id %}
+    You are logged in.
+    | <a href="/new">Send</a>
+    | <a href="/myprofile">Profile</a>
+    | <a href="/logout">Log out</a>
 {% else %}
-<a href="/login">Log in</a>
+    <a href="/login">Log in</a>
 {% endif %}

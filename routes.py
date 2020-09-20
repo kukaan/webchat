@@ -4,7 +4,10 @@ import messages, users
 
 @app.route("/")
 def index():
-    list = messages.get_list()
+    if users.is_admin():
+        list = messages.get_list_with_invisible()
+    else:
+        list = messages.get_list()
     return render_template("index.html", count=len(list), messages=list)
 
 @app.route("/new")
@@ -70,9 +73,17 @@ def profile(id):
         allow = True
     if allow:
         user = users.get_user(id)
-        print(user)
+        #TODO: check that user_id exists
         username = user[0]
         is_admin = user[1]
         return render_template("profile.html", user_id=id, username=username, is_admin=is_admin)
     else:
         return render_template("error.html",message="Ei oikeutta nähdä sivua")
+
+@app.route("/deletemessage/<int:id>")
+def deletemessage(id):
+    if messages.hide(id):
+        return redirect("/")
+    else:
+        return render_template("error.html",message="Message deletion failed")
+
