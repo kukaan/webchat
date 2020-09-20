@@ -5,12 +5,14 @@
 <p>
 <i>Sender:</i> {{ message[1] }}
 <p>
-<i>Time:</i> {{ message[2].strftime("%Y-%m-%d %H:%M:%S") }}
+<i>Time:</i> {{ message[2].strftime("%Y-%m-%d %H:%M:%S") }} UTC
 <hr>
 {% endfor %}
 {% if session.user_id %}
 You are logged in.
-<a href="/new">Send</a> | <a href="/logout">Log out</a>
+| <a href="/new">Send</a>
+| <a href="/myprofile">Profile</a>
+| <a href="/logout">Log out</a>
 {% else %}
 <a href="/login">Log in</a>
 {% endif %}

@@ -1,6 +1,19 @@
 <form action="/send" method="post">
-    Viesti: <br>
+    Message: <br>
     <textarea name="content" rows="3" cols="40"></textarea>
     <br>
     <input type="submit" value="Send">
-    </form>
+</form>
+
+<!--
+    TODO: fix alert script
+-->
+<script>
+    function check(form) {
+        if (form.content.value.length > 1000) {
+            alert("The message is too long");
+            return false;
+        }
+        return true;
+    }
+</script>

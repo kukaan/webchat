@@ -14,6 +14,8 @@ def new():
 @app.route("/send", methods=["POST"])
 def send():
     content = request.form["content"]
+    if len(content) > 1000:
+        return render_template("error.html", message="The message is too long")
     if messages.send(content):
         return redirect("/")
     else:
@@ -43,10 +45,21 @@ def register():
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
+        if len(username) > 30:
+            return render_template("error.html", message="The username is too long")
+        if len(password) > 30:
+            return render_template("error.html", message="The password is too long")
+        if len(password) < 8:
+            return render_template("error.html", message="The password is too short")
         if users.register(username,password):
             return redirect("/")
         else:
             return render_template("error.html",message="Rekisteröinti ei onnistunut")
+
+@app.route("/myprofile")
+def myprofile():
+    id = users.user_id()
+    return redirect("/profile/"+str(id))
 
 @app.route("/profile/<int:id>")
 def profile(id):
@@ -56,9 +69,10 @@ def profile(id):
     elif users.user_id() == id:
         allow = True
     if allow:
-        user_id = users.user_id()
-        username = users.username()
-        is_admin = users.is_admin()
-        return render_template("profile.html", user_id=user_id, username=username, is_admin=is_admin)
-    if not allow:
+        user = users.get_user(id)
+        print(user)
+        username = user[0]
+        is_admin = user[1]
+        return render_template("profile.html", user_id=id, username=username, is_admin=is_admin)
+    else:
         return render_template("error.html",message="Ei oikeutta nähdä sivua")

@@ -34,8 +34,12 @@ def register(username,password):
     return login(username,password)
 
 def is_admin():
-    return session.get("is_admin",0)
+    return session.get("is_admin",None)
 
 def username():
     return session.get("username", 0)
 
+def get_user(id):
+    sql = "SELECT username, is_admin FROM users WHERE id=:id"
+    result = db.session.execute(sql, {"id":id})
+    return result.fetchone()
