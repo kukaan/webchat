@@ -1,16 +1,10 @@
-<h1>WebChat</h1>
-<a href="/search">Search</a>
-| <a href="/threads">Threads</a>
-{% if session.user_id %}
-    | <a href="/new">Send a new message</a>
-    | <a href="/myprofile">Profile</a>
-    | <a href="/logout">Log out user {{ session.username }}</a>
-{% else %}
-    <a href="/login">Log in</a>
-{% endif %}
-<p>
-<hr>
-<h3>{{ count }} message(s)</h3>
+<form action="/result" method="GET">
+    What are you looking for? 
+    <input type="text" name="query"> 
+    <input type="submit" value="Search">
+</form>
+
+<h3>{{ count }} result(s) for {{ query }}</h3>
 <hr>
 {% for message in messages %}
     <i>Message:</i> {{ message[0] }}

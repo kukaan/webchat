@@ -112,3 +112,9 @@ def reply(id, content):
     db.session.execute(sql, {"content":content, "user_id":user_id, "thread_id":id})
     db.session.commit()
     return True
+
+def result(query):
+    sql = "SELECT M.content, U.username, M.created_at, M.user_id, M.id FROM messages M, users U " \
+          "WHERE M.content LIKE :query AND M.user_id=U.id AND M.visible=true ORDER BY M.id"
+    result = db.session.execute(sql, {"query":"%"+query+"%"})
+    return result.fetchall()
