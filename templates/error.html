@@ -1,1 +1,8 @@
-Error: {{ message }}
+Error: 
+{% if message %}
+    {{ message }}
+{% else %}
+    {% for message in messages %}
+       <br> {{ message }}
+    {% endfor %}
+{% endif %}

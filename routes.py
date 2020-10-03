@@ -2,6 +2,12 @@ from app import app
 from flask import render_template, redirect, request
 import messages, users
 
+def append_string_length_error(list,string,stringname,min_length,max_length):
+    if len(string) < min_length:
+        list.append(f"The {stringname} is too short")
+    elif len(string) > max_length:
+        list.append(f"The {stringname} is too long")
+
 @app.route("/")
 def index():
     if users.is_admin():
@@ -17,12 +23,14 @@ def new():
 @app.route("/send", methods=["POST"])
 def send():
     content = request.form["content"]
-    if len(content) > 1000:
-        return render_template("error.html", message="The message is too long")
+    error_messages = []
+    append_string_length_error(error_messages, content,"message",1,1000)
+    if len(error_messages) > 0:
+        return render_template("error.html",messages=error_messages)
     if messages.send(content):
         return redirect("/")
     else:
-        return render_template("error.html",message="Viestin lähetys ei onnistunut")
+        return render_template("error.html",message="Failed to send the message.")
 
 @app.route("/login", methods=["GET","POST"])
 def login():
@@ -31,10 +39,15 @@ def login():
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
+        error_messages = []
+        append_string_length_error(error_messages, username,"username",1,50)
+        append_string_length_error(error_messages,password,"password",1,50)
+        if len(error_messages) > 0:
+            return render_template("error.html",messages=error_messages)
         if users.login(username,password):
             return redirect("/")
         else:
-            return render_template("error.html",message="Väärä tunnus tai salasana")
+            return render_template("error.html",message="Wrong username or password.")
 
 @app.route("/logout")
 def logout():
@@ -48,16 +61,15 @@ def register():
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
-        if len(username) > 30:
-            return render_template("error.html", message="The username is too long")
-        if len(password) > 30:
-            return render_template("error.html", message="The password is too long")
-        if len(password) < 8:
-            return render_template("error.html", message="The password is too short")
+        error_messages = []
+        append_string_length_error(error_messages, username,"username",4,30)
+        append_string_length_error(error_messages,password,"password",8,30)
+        if len(error_messages) > 0:
+            return render_template("error.html",messages=error_messages)
         if users.register(username,password):
             return redirect("/")
         else:
-            return render_template("error.html",message="Rekisteröinti ei onnistunut")
+            return render_template("error.html",message="Registration failed.")
 
 @app.route("/myprofile")
 def myprofile():
@@ -78,14 +90,14 @@ def profile(id):
         is_admin = user[1]
         return render_template("profile.html", user_id=id, username=username, is_admin=is_admin)
     else:
-        return render_template("error.html",message="Ei oikeutta nähdä sivua")
+        return render_template("error.html",message="Your account has insufficient rights to view this page.")
 
 @app.route("/deletemessage/<int:id>")
 def deletemessage(id):
     if messages.hide(id):
         return redirect("/")
     else:
-        return render_template("error.html",message="Message deletion failed")
+        return render_template("error.html",message="Message deletion failed.")
 
 @app.route("/thread/<int:id>")
 def thread(id):
@@ -102,12 +114,14 @@ def newthread():
         return render_template("newthread.html")
     if request.method == "POST":
         topic = request.form["topic"]
-        if len(topic) > 30:
-            return render_template("error.html", message="The topic is too long")
+        error_messages = []
+        append_string_length_error(error_messages,topic,"topic",1,30)
+        if len(error_messages) > 0:
+            return render_template("error.html",messages=error_messages)
         if messages.add_thread(topic):
             return redirect("threads")
         else:
-            return render_template("error.html",message="Thread creation failed")
+            return render_template("error.html",message="Thread creation failed.")
 
 @app.route("/threads")
 def threads():
@@ -120,14 +134,18 @@ def threads():
 @app.route("/thread/<int:id>/delete")
 def deletethread(id):
     if messages.hide_thread(id):
-        return redirect("threads")
+        return redirect("/threads")
     else:
-        return render_template("error.html",message="Thread deletion failed")
+        return render_template("error.html",message="Thread deletion failed.")
 
 @app.route("/thread/<int:id>/reply", methods=["POST"])
 def reply(id):
     content = request.form["content"]
+    error_messages = []
+    append_string_length_error(error_messages, content,"message",1,1000)
+    if len(error_messages) > 0:
+        return render_template("error.html",messages=error_messages)
     if messages.reply(id, content):
         return redirect("/thread/"+str(id))
     else:
-        return render_template("error.html",message="Sending message failed")
+        return render_template("error.html",message="Sending message failed.")
