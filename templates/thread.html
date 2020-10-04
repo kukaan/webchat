@@ -9,8 +9,7 @@
 <hr>
 {{ count }} message(s) in <b>{{ thread_attributes[0] }}</b>
 {% if session.user_id == thread_attributes[1] %}
-    | <a href="/thread/{{ id }}/edit">Edit</a>
-    | <a href="/thread/{{ id }}/delete">Delete</a>
+    <a href="/thread/{{ id }}/delete">Delete</a>
 {% endif %}
 <p>
 
@@ -35,26 +34,43 @@
     <hr>
 {% endfor %}
 {% if session.user_id %}
-    <form action="/thread/{{ id }}/reply" method="post">
+    <form action="/thread/{{ id }}/reply" method="post" onsubmit="return check(this)">
         <input type="hidden" name="id" value="{{ id }}">
-        Reply to thread (max 1000 characters): <br>
+        Reply to thread (1-1000 characters): <br>
         <textarea name="content" rows="3" cols="40"></textarea>
         <br>
         <input type="submit" value="Send">
     </form>
-    <!--
-        TODO: fix alert script
-    -->
+    
     <script>
-        function check(form) {<input type="hidden" name="id" value="{{ id }}">
-            if (form.content.value.length > 1000) {
-                alert("The message is too long");
+        var message;
+        var errors;
+        
+        function check(form) {
+            errors = [];
+            append_string_length_error(form.content.value.length,
+                "message", 1, 1000);
+            if (errors.length > 0) {
+                message = "";
+                errors.forEach(addError);
+                alert(message)
                 return false;
             }
             return true;
         }
+
+        function append_string_length_error(length,name,min_length,max_length) {
+            if (length < min_length) {
+                errors.push("The "+name+" is too short")
+            } else if (length > max_length) {
+                errors.push("The "+name+" is too long")
+            }
+        }
+
+        function addError(error) {
+            message += error + "\n";
+        }
     </script>
-    <p>
 {% else %}
     <a href="/login">Log in to reply to this thread</a>
 {% endif %}
