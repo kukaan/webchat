@@ -1,0 +1,21 @@
+<form action="/editmessage/{{ id }}" method="post" onsubmit="return check(this)">
+    Message (1-1000 characters): 
+    <br>
+    <textarea name="content" rows="3" cols="40">{{ content }}</textarea>
+    <br>
+    <input type="submit" value="Edit">
+</form>
+
+<script>
+    function check(form) {
+        if (form.content.value.length < 1) {
+            alert("The message is too short");
+            return false;
+        }
+        if (form.content.value.length > 1000) {
+            alert("The message is too long");
+            return false;
+        }
+        return true;
+    }
+</script>

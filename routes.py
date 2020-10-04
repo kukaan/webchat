@@ -160,3 +160,19 @@ def result():
     order = request.args["order"]
     list = messages.result(query, order)
     return render_template("result.html", query=query, order=order, count=len(list), messages=list)
+
+@app.route("/editmessage/<int:id>", methods=["GET","POST"])
+def editmessage(id):
+    attributes = messages.get_message_attributes(id)
+    if request.method == "GET":
+        return render_template("editmessage.html", id=id, content=attributes[0])
+    if request.method == "POST":
+        content = request.form["content"]
+        error_messages = []
+        append_string_length_error(error_messages, content,"message",1,1000)
+        if len(error_messages) > 0:
+            return render_template("error.html",messages=error_messages)
+        if messages.edit_message(id, content):
+            return redirect("/thread/"+str(attributes[1]))
+        else:
+            return render_template("error.html",message="Failed to edit the message.")

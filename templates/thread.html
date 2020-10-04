@@ -6,13 +6,14 @@
 {% else %}
     <a href="/login">Log in</a>
 {% endif %}
-<i>Topic:</i> {{ thread_attributes[0] }}
-<p>
+<hr>
+{{ count }} message(s) in <b>{{ thread_attributes[0] }}</b>
 {% if session.user_id == thread_attributes[1] %}
-    <a href="/thread/{{ id }}/delete">Delete thread</a>
+    | <a href="/thread/{{ id }}/edit">Edit</a>
+    | <a href="/thread/{{ id }}/delete">Delete</a>
 {% endif %}
 <p>
-{{ count }} message(s)
+
 <hr>
 {% for message in messages %}
     <i>Message:</i> {{ message[0] }}
@@ -20,12 +21,16 @@
     <i>Sender:</i> {{ message[1] }}
     <p>
     <i>Time:</i> {{ message[2].strftime("%Y-%m-%d %H:%M:%S") }} UTC
+    {% if message[6] != None %}
+     (edited at {{ message[6].strftime("%Y-%m-%d %H:%M:%S") }})
+    {% endif %}
     <p>
     {% if session.is_admin %}
     <i>Visibility:</i> {{ message[5] }} |
     {% endif %}
     {% if session.user_id == message[3] %}
-    <a href="/deletemessage/{{ message[4] }}">Delete</a>
+    <a href="/editmessage/{{ message[4] }}">Edit</a>
+    | <a href="/deletemessage/{{ message[4] }}">Delete</a>
     {% endif %}
     <hr>
 {% endfor %}

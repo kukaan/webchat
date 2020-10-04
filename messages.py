@@ -45,13 +45,13 @@ def hide(id):
         return False
 
 def get_thread(id):
-    sql = "SELECT M.content, U.username, M.created_at, M.user_id, M.id, M.visible FROM messages M, users U " \
+    sql = "SELECT M.content, U.username, M.created_at, M.user_id, M.id, M.visible, M.edited_at FROM messages M, users U " \
           "WHERE M.thread_id=:id AND M.user_id=U.id AND M.visible=true ORDER BY M.id"
     result = db.session.execute(sql, {"id":id})
     return result.fetchall()
 
 def get_thread_with_invisible(id):
-    sql = "SELECT M.content, U.username, M.created_at, M.user_id, M.id, M.visible FROM messages M, users U " \
+    sql = "SELECT M.content, U.username, M.created_at, M.user_id, M.id, M.visible, M.edited_at FROM messages M, users U " \
           "WHERE M.thread_id=:id AND M.user_id=U.id ORDER BY M.id"
     result = db.session.execute(sql, {"id":id})
     return result.fetchall()
@@ -115,10 +115,27 @@ def reply(id, content):
 
 def result(query, order):
     if (order=="ASC"):
-        sql = "SELECT M.content, U.username, M.created_at, M.user_id, M.id, M.visible, T.topic, T.id FROM messages M, users U, threads T " \
+        sql = "SELECT M.content, U.username, M.created_at, M.user_id, M.id, M.visible, T.topic, T.id, M.edited_at FROM messages M, users U, threads T " \
               "WHERE M.content LIKE :query AND M.user_id=U.id AND M.thread_id=T.id AND M.visible=true ORDER BY M.created_at ASC"
     else:
-        sql = "SELECT M.content, U.username, M.created_at, M.user_id, M.id, M.visible, T.topic, T.id FROM messages M, users U, threads T " \
+        sql = "SELECT M.content, U.username, M.created_at, M.user_id, M.id, M.visible, T.topic, T.id, M.edited_at FROM messages M, users U, threads T " \
           "WHERE M.content LIKE :query AND M.user_id=U.id AND M.thread_id=T.id AND M.visible=true ORDER BY M.created_at DESC"
     result = db.session.execute(sql, {"query":"%"+query+"%"})
     return result.fetchall()
+
+def edit_message(id, content):
+    allow = False
+    if users.user_id() == get_user_id(id):
+        allow = True
+    if allow:
+        sql = "UPDATE messages SET content=:content, edited_at=NOW() WHERE id=:id"
+        db.session.execute(sql, {"id":id, "content":content})
+        db.session.commit()
+        return True
+    else:
+        return False
+
+def get_message_attributes(id):
+    sql = "SELECT content, thread_id FROM messages WHERE id=:id"
+    result = db.session.execute(sql, {"id":id})
+    return result.fetchone()
