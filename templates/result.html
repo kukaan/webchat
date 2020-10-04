@@ -2,11 +2,17 @@
     What are you looking for? 
     <input type="text" name="query"> 
     <input type="submit" value="Search">
+    <select name="order">
+        <option value="DESC" selected> newest first
+        <option value="ASC"> oldest first
+    </select>
 </form>
 
-<h3>{{ count }} result(s) for {{ query }}</h3>
+<h3>{{ count }} result(s) for "{{ query }}"</h3>
 <hr>
 {% for message in messages %}
+    <i>Thread:</i> <a href="/thread/{{ message[7] }}">{{ message[6] }}</a>
+    <p>
     <i>Message:</i> {{ message[0] }}
     <p>
     <i>Sender:</i> {{ message[1] }}

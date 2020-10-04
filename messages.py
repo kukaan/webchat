@@ -113,8 +113,12 @@ def reply(id, content):
     db.session.commit()
     return True
 
-def result(query):
-    sql = "SELECT M.content, U.username, M.created_at, M.user_id, M.id FROM messages M, users U " \
-          "WHERE M.content LIKE :query AND M.user_id=U.id AND M.visible=true ORDER BY M.id"
+def result(query, order):
+    if (order=="ASC"):
+        sql = "SELECT M.content, U.username, M.created_at, M.user_id, M.id, M.visible, T.topic, T.id FROM messages M, users U, threads T " \
+              "WHERE M.content LIKE :query AND M.user_id=U.id AND M.thread_id=T.id AND M.visible=true ORDER BY M.created_at ASC"
+    else:
+        sql = "SELECT M.content, U.username, M.created_at, M.user_id, M.id, M.visible, T.topic, T.id FROM messages M, users U, threads T " \
+          "WHERE M.content LIKE :query AND M.user_id=U.id AND M.thread_id=T.id AND M.visible=true ORDER BY M.created_at DESC"
     result = db.session.execute(sql, {"query":"%"+query+"%"})
     return result.fetchall()

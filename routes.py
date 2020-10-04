@@ -157,5 +157,6 @@ def search():
 @app.route("/result")
 def result():
     query = request.args["query"]
-    list = messages.result(query)
-    return render_template("result.html", query=query, count=len(list), messages=list)
+    order = request.args["order"]
+    list = messages.result(query, order)
+    return render_template("result.html", query=query, order=order, count=len(list), messages=list)
