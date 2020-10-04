@@ -1,7 +1,40 @@
-<form action="/register" method="post">
+<form action="/register" method="post" onsubmit="return check(this)">
     Username (4-30 characters): <input type="text" name="username">
     <p>
     Salasana (8-30 characters): <input type="password" name="password">
     <p>
     <input type="submit" value="Create new account">
     </form>
+
+    <script>
+        var message;
+        var errors;
+        
+        function check(form) {
+            errors = [];
+            append_string_length_error(form.username.value.length,
+                "username", 4, 30);
+            append_string_length_error(form.password.value.length,
+                "password", 8, 30);
+            
+            if (errors.length > 0) {
+                message = "";
+                errors.forEach(addError);
+                alert(message)
+                return false;
+            }
+            return true;
+        }
+
+        function append_string_length_error(length,name,min_length,max_length) {
+            if (length < min_length) {
+                errors.push("The "+name+" is too short")
+            } else if (length > max_length) {
+                errors.push("The "+name+" is too long")
+            }
+        }
+
+        function addError(error) {
+            message += error + "\n";
+        }
+    </script>

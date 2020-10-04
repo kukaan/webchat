@@ -1,17 +1,18 @@
-<form action="/newthread" method="post">
-    Topic (max 30 characters): <br>
+<form action="/newthread" method="post" onsubmit="return check(this)">
+    Title (1-30 characters): <br>
     <textarea name="topic" rows="3" cols="40"></textarea>
     <br>
     <input type="submit" value="Send">
 </form>
 
-<!--
-    TODO: fix alert script
--->
 <script>
     function check(form) {
+        if (form.topic.value.length < 1) {
+            alert("The title is too short");
+            return false;
+        }
         if (form.topic.value.length > 30) {
-            alert("The topic is too long");
+            alert("The title is too long");
             return false;
         }
         return true;
