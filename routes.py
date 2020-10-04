@@ -8,14 +8,6 @@ def append_string_length_error(list,string,stringname,min_length,max_length):
     elif len(string) > max_length:
         list.append(f"The {stringname} is too long")
 
-@app.route("/")
-def index():
-    if users.is_admin():
-        list = messages.get_list_with_invisible()
-    else:
-        list = messages.get_list()
-    return render_template("index.html", count=len(list), messages=list)
-
 @app.route("/new")
 def new():
     return render_template("new.html")
@@ -176,3 +168,35 @@ def editmessage(id):
             return redirect("/thread/"+str(attributes[1]))
         else:
             return render_template("error.html",message="Failed to edit the message.")
+
+@app.route("/allmessages")
+def allmessages():
+    if users.is_admin():
+        list = messages.get_list_with_invisible()
+    else:
+        list = messages.get_list()
+    return render_template("allmessages.html", count=len(list), messages=list)
+
+@app.route("/")
+def index():
+    latest = messages.get_latest_messages()
+    forums = messages.get_forums()
+    return render_template("index.html", count=len(latest), messages=latest, forums=forums)
+
+@app.route("/forum/<int:id>")
+def forum(id):
+    threads = messages.get_forum_threads(id)
+    attributes = messages.get_forum_attributes(id)
+    return render_template("forum.html", count=len(threads), threads=threads, id=id, attributes=attributes)
+
+@app.route("/forum/<int:id>/newthread", methods=["POST"])
+def forum_newthread(id):
+    content = request.form["content"]
+    error_messages = []
+    append_string_length_error(error_messages, content,"message",1,60)
+    if len(error_messages) > 0:
+        return render_template("error.html",messages=error_messages)
+    if messages.newthread(id, content):
+        return redirect("/forum/"+str(id))
+    else:
+        return render_template("error.html",message="Thread creation failed failed.")

@@ -139,3 +139,36 @@ def get_message_attributes(id):
     sql = "SELECT content, thread_id FROM messages WHERE id=:id"
     result = db.session.execute(sql, {"id":id})
     return result.fetchone()
+
+def get_latest_messages():
+    sql = "SELECT M.content, U.username, M.created_at, M.user_id, M.id, M.visible, T.topic, T.id, M.edited_at FROM messages M, users U, threads T " \
+          "WHERE M.user_id=U.id AND M.thread_id=T.id AND M.visible=true ORDER BY M.created_at DESC LIMIT 3"
+    result = db.session.execute(sql)
+    return result.fetchall()
+
+def get_forums():
+    sql = "SELECT * FROM forums F " \
+          "ORDER BY F.name"
+    result = db.session.execute(sql)
+    return result.fetchall()
+
+def get_forum_threads(id):
+    #TODO: order by the latest message of each thread
+    sql = "SELECT T.topic, U.username, T.created_at, T.user_id, T.id, T.visible FROM threads T, users U " \
+          "WHERE T.forum_id=:id AND T.user_id=U.id AND T.visible=true ORDER BY T.created_at DESC"
+    result = db.session.execute(sql, {"id":id})
+    return result.fetchall()
+
+def get_forum_attributes(id):
+    sql = "SELECT name, visibility FROM forums WHERE id=:id"
+    result = db.session.execute(sql, {"id":id})
+    return result.fetchone()
+
+def newthread(forum_id, title):
+    user_id = users.user_id()
+    if user_id == 0:
+        return False
+    sql = "INSERT INTO threads (topic, user_id, created_at, visible, forum_id) VALUES (:topic, :user_id, NOW(), true, :forum_id)"
+    db.session.execute(sql, {"topic":title, "user_id":user_id, "forum_id":forum_id})
+    db.session.commit()
+    return True

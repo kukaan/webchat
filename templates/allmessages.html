@@ -1,0 +1,17 @@
+<h3>{{ count }} message(s)</h3>
+<hr>
+{% for message in messages %}
+    <i>Message:</i> {{ message[0] }}
+    <p>
+    <i>Sender:</i> {{ message[1] }}
+    <p>
+    <i>Time:</i> {{ message[2].strftime("%Y-%m-%d %H:%M:%S") }} UTC
+    <p>
+    {% if session.is_admin %}
+        <i>Visibility:</i> {{ message[5] }} |
+    {% endif %}
+    {% if session.user_id == message[3] %}
+        <a href="/deletemessage/{{ message[4] }}">Delete</a>
+    {% endif %}
+    <hr>
+{% endfor %}

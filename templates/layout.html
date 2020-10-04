@@ -1,0 +1,14 @@
+<!doctype html>
+<title>{% block title %}{% endblock %} - WebChat</title>
+<h1><a href="/">WebChat</a></h1>
+<a href="/search">Search</a>
+| <a href="/threads">Threads</a>
+{% if session.user_id %}
+    | <a href="/myprofile">Profile</a>
+    | <a href="/logout">Log out user {{ session.username }}</a>
+{% else %}
+    | <a href="/login">Log in</a>
+{% endif %}
+<hr>
+{% block content %}{% endblock %}
+<hr>

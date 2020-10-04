@@ -1,0 +1,66 @@
+{% extends "layout.html" %}
+{% block title %}{{ attributes[0] }}{% endblock %}
+{% block content %}
+<h2>{{ attributes[0] }}</h2>
+<h3>{{ count }} threads(s)</h3>
+<hr>
+{% for thread in threads %}
+    <h4><a href="/thread/{{ thread[4] }}">{{ thread[0] }}</a></h4>
+    <p>
+    <i>Creator:</i> {{ thread[1] }}
+    <p>
+    <i>Time:</i> {{ thread[2].strftime("%Y-%m-%d %H:%M:%S") }} UTC
+    <p>
+    {% if session.is_admin %}
+    <i>Visibility:</i> {{ thread[5] }} |
+    {% endif %}
+    {% if session.user_id == thread[3] %}
+    <a href="/deletethread/{{ thread[4] }}">Delete thread</a>
+    {% endif %}
+    <hr>
+{% endfor %}
+<hr>
+
+{% if session.user_id %}
+    Create a new thread
+    <form action="/forum/{{ id }}/newthread" method="post" onsubmit="return check(this)">
+        <input type="hidden" name="id" value="{{ id }}">
+        Title (1-60 characters): <br>
+        <textarea name="content" rows="2" cols="30"></textarea>
+        <br>
+        <input type="submit" value="Create">
+    </form>
+    
+    <script>
+        var message;
+        var errors;
+        
+        function check(form) {
+            errors = [];
+            append_string_length_error(form.content.value.length,
+                "title", 1, 60);
+            if (errors.length > 0) {
+                message = "";
+                errors.forEach(addError);
+                alert(message)
+                return false;
+            }
+            return true;
+        }
+
+        function append_string_length_error(length,name,min_length,max_length) {
+            if (length < min_length) {
+                errors.push("The "+name+" is too short")
+            } else if (length > max_length) {
+                errors.push("The "+name+" is too long")
+            }
+        }
+
+        function addError(error) {
+            message += error + "\n";
+        }
+    </script>
+{% else %}
+    <a href="/login">Log in to reply to this thread</a>
+{% endif %}
+{% endblock %}

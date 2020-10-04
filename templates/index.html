@@ -1,29 +1,34 @@
-<h1>WebChat</h1>
-<a href="/search">Search</a>
-| <a href="/threads">Threads</a>
-{% if session.user_id %}
-    | <a href="/new">Send a new message</a>
-    | <a href="/myprofile">Profile</a>
-    | <a href="/logout">Log out user {{ session.username }}</a>
-{% else %}
-    | <a href="/login">Log in</a>
-{% endif %}
-<p>
-<hr>
-<h3>{{ count }} message(s)</h3>
+{% extends "layout.html" %}
+{% block title %}Front page{% endblock %}
+{% block content %}
+<h2>Latest messages</h2>
+<a href="/allmessages">Show all messages</a>
 <hr>
 {% for message in messages %}
+    <i>Thread:</i> <a href="/thread/{{ message[7] }}">{{ message[6] }}</a>
+    <p>
     <i>Message:</i> {{ message[0] }}
     <p>
     <i>Sender:</i> {{ message[1] }}
     <p>
     <i>Time:</i> {{ message[2].strftime("%Y-%m-%d %H:%M:%S") }} UTC
+    {% if message[8] != None %}
+     (edited at {{ message[8].strftime("%Y-%m-%d %H:%M:%S") }})
+    {% endif %}
     <p>
     {% if session.is_admin %}
     <i>Visibility:</i> {{ message[5] }} |
     {% endif %}
     {% if session.user_id == message[3] %}
-    <a href="/deletemessage/{{ message[4] }}">Delete</a>
+    <a href="/editmessage/{{ message[4] }}">Edit</a>
+    | <a href="/deletemessage/{{ message[4] }}">Delete</a>
     {% endif %}
     <hr>
 {% endfor %}
+<hr>
+<h2>Forums</h2>
+{% for forum in forums %}
+    <a href="/forum/{{ forum[0] }}">{{ forum[1] }}</a>
+    <br>
+{% endfor %}
+{% endblock %}
