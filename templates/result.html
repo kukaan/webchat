@@ -1,3 +1,6 @@
+{% extends "layout.html" %}
+{% block title %}Results for "{{ query }}"{% endblock %}
+{% block content %}
 <form action="/result" method="GET">
     What are you looking for? 
     <input type="text" name="query"> 
@@ -31,3 +34,4 @@
     {% endif %}
     <hr>
 {% endfor %}
+{% endblock %}

@@ -1,3 +1,6 @@
+{% extends "layout.html" %}
+{% block title %}Front page{% endblock %}
+{% block content %}
 Error: 
 {% if message %}
     {{ message }}
@@ -6,3 +9,4 @@ Error:
        <br> {{ message }}
     {% endfor %}
 {% endif %}
+{% endblock %}

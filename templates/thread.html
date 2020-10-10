@@ -1,15 +1,9 @@
-<h1>WebChat</h1>
-{% if session.user_id %}
-    You are logged in as {{ session.username }}.
-    | <a href="/myprofile">Profile</a>
-    | <a href="/logout">Log out</a>
-{% else %}
-    <a href="/login">Log in</a>
-{% endif %}
-<hr>
+{% extends "layout.html" %}
+{% block title %}{{ thread_attributes[0] }}{% endblock %}
+{% block content %}
 {{ count }} message(s) in <b>{{ thread_attributes[0] }}</b>
 {% if session.user_id == thread_attributes[1] %}
-    <a href="/thread/{{ id }}/delete">Delete</a>
+    | <a href="/thread/{{ id }}/delete">Delete thread</a>
 {% endif %}
 <p>
 
@@ -36,7 +30,7 @@
 {% if session.user_id %}
     <form action="/thread/{{ id }}/reply" method="post" onsubmit="return check(this)">
         <input type="hidden" name="id" value="{{ id }}">
-        Reply to thread (1-1000 characters): <br>
+        <b>Reply to thread</b> (1-1000 characters): <br>
         <textarea name="content" rows="3" cols="40"></textarea>
         <br>
         <input type="submit" value="Send">
@@ -74,3 +68,4 @@
 {% else %}
     <a href="/login">Log in to reply to this thread</a>
 {% endif %}
+{% endblock %}

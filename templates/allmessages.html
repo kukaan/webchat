@@ -1,3 +1,6 @@
+{% extends "layout.html" %}
+{% block title %}All messages{% endblock %}
+{% block content %}
 <h3>{{ count }} message(s)</h3>
 <hr>
 {% for message in messages %}
@@ -15,3 +18,4 @@
     {% endif %}
     <hr>
 {% endfor %}
+{% endblock %}

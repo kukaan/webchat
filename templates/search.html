@@ -1,9 +1,15 @@
+{% extends "layout.html" %}
+{% block title %}Search{% endblock %}
+{% block content %}
 <form action="/result" method="GET">
-    What are you looking for? 
+    <h3>What are you looking for?</h3>
+    <p>
     <input type="text" name="query"> 
+    <p>
     <input type="submit" value="Search">
     <select name="order">
         <option value="DESC" selected> newest first
         <option value="ASC"> oldest first
     </select>
 </form>
+{% endblock %}

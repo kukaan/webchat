@@ -1,7 +1,10 @@
+{% extends "layout.html" %}
+{% block title %}Register{% endblock %}
+{% block content %}
 <form action="/register" method="post" onsubmit="return check(this)">
     Username (4-30 characters): <input type="text" name="username">
     <p>
-    Salasana (8-30 characters): <input type="password" name="password">
+    Password (8-30 characters): <input type="password" name="password">
     <p>
     <input type="submit" value="Create new account">
     </form>
@@ -38,3 +41,4 @@
             message += error + "\n";
         }
     </script>
+{% endblock %}

@@ -1,6 +1,7 @@
 {% extends "layout.html" %}
 {% block title %}Front page{% endblock %}
 {% block content %}
+<hr>
 <h2>Latest messages</h2>
 <a href="/allmessages">Show all messages</a>
 <hr>
@@ -29,6 +30,6 @@
 <h2>Forums</h2>
 {% for forum in forums %}
     <a href="/forum/{{ forum[0] }}">{{ forum[1] }}</a>
-    <br>
+    <p>
 {% endfor %}
 {% endblock %}

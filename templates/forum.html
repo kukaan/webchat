@@ -1,6 +1,7 @@
 {% extends "layout.html" %}
 {% block title %}{{ attributes[0] }}{% endblock %}
 {% block content %}
+<hr>
 <h2>{{ attributes[0] }}</h2>
 <h3>{{ count }} threads(s)</h3>
 <hr>
@@ -22,12 +23,12 @@
 <hr>
 
 {% if session.user_id %}
-    Create a new thread
+    <h4>Create a new thread</h4>
     <form action="/forum/{{ id }}/newthread" method="post" onsubmit="return check(this)">
         <input type="hidden" name="id" value="{{ id }}">
         Title (1-60 characters): <br>
         <textarea name="content" rows="2" cols="30"></textarea>
-        <br>
+        <p>
         <input type="submit" value="Create">
     </form>
     
