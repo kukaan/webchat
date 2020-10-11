@@ -7,11 +7,11 @@
 <hr>
 {% for thread in threads %}
     <h4><a href="/thread/{{ thread[4] }}">{{ thread[0] }}</a></h4>
-    <p>
+    <br>
     <i>Creator:</i> {{ thread[1] }}
-    <p>
+    <br>
     <i>Time:</i> {{ thread[2].strftime("%Y-%m-%d %H:%M:%S") }} UTC
-    <p>
+    <br>
     {% if session.is_admin %}
     <i>Visibility:</i> {{ thread[5] }} |
     {% endif %}

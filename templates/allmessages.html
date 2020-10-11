@@ -5,16 +5,17 @@
 <hr>
 {% for message in messages %}
     <i>Message:</i> {{ message[0] }}
-    <p>
+    <br>
     <i>Sender:</i> {{ message[1] }}
-    <p>
+    <br>
     <i>Time:</i> {{ message[2].strftime("%Y-%m-%d %H:%M:%S") }} UTC
-    <p>
+    <br>
     {% if session.is_admin %}
         <i>Visibility:</i> {{ message[5] }} |
     {% endif %}
     {% if session.user_id == message[3] %}
-        <a href="/deletemessage/{{ message[4] }}">Delete</a>
+        <a href="/editmessage/{{ message[4] }}">Edit</a>
+        | <a href="/deletemessage/{{ message[4] }}">Delete</a>
     {% endif %}
     <hr>
 {% endfor %}

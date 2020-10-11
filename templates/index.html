@@ -7,16 +7,16 @@
 <hr>
 {% for message in messages %}
     <i>Thread:</i> <a href="/thread/{{ message[7] }}">{{ message[6] }}</a>
-    <p>
+    <br>
     <i>Message:</i> {{ message[0] }}
-    <p>
+    <br>
     <i>Sender:</i> {{ message[1] }}
-    <p>
+    <br>
     <i>Time:</i> {{ message[2].strftime("%Y-%m-%d %H:%M:%S") }} UTC
     {% if message[8] != None %}
      (edited at {{ message[8].strftime("%Y-%m-%d %H:%M:%S") }})
     {% endif %}
-    <p>
+    <br>
     {% if session.is_admin %}
     <i>Visibility:</i> {{ message[5] }} |
     {% endif %}
@@ -30,6 +30,6 @@
 <h2>Forums</h2>
 {% for forum in forums %}
     <a href="/forum/{{ forum[0] }}">{{ forum[1] }}</a>
-    <p>
+    <br>
 {% endfor %}
 {% endblock %}
