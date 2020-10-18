@@ -2,14 +2,18 @@ from db import db
 import users
 
 def get_list():
-    sql = "SELECT M.content, U.username, M.created_at, M.user_id, M.id FROM messages M, users U " \
-          "WHERE M.user_id=U.id AND M.visible=true ORDER BY M.id"
+    sql = """SELECT M.content, U.username, M.created_at, M.user_id, M.id 
+             FROM messages M, users U 
+             WHERE M.user_id=U.id AND M.visible=true 
+             ORDER BY M.id"""
     result = db.session.execute(sql)
     return result.fetchall()
 
 def get_list_with_invisible():
-    sql = "SELECT M.content, U.username, M.created_at, M.user_id, M.id, M.visible FROM messages M, users U " \
-          "WHERE M.user_id=U.id ORDER BY M.id"
+    sql = """SELECT M.content, U.username, M.created_at, M.user_id, M.id, M.visible 
+             FROM messages M, users U 
+             WHERE M.user_id=U.id 
+             ORDER BY M.id"""
     result = db.session.execute(sql)
     return result.fetchall()
 
@@ -17,7 +21,8 @@ def send(content):
     user_id = users.user_id()
     if user_id == 0:
         return False
-    sql = "INSERT INTO messages (content, user_id, created_at, visible) VALUES (:content, :user_id, NOW(), true)"
+    sql = """INSERT INTO messages (content, user_id, created_at, visible) 
+             VALUES (:content, :user_id, NOW(), true)"""
     db.session.execute(sql, {"content":content, "user_id":user_id})
     db.session.commit()
     return True
@@ -45,14 +50,20 @@ def hide(id):
         return False
 
 def get_thread(id):
-    sql = "SELECT M.content, U.username, M.created_at, M.user_id, M.id, M.visible, M.edited_at FROM messages M, users U " \
-          "WHERE M.thread_id=:id AND M.user_id=U.id AND M.visible=true ORDER BY M.id"
+    sql = """SELECT M.content, U.username, M.created_at, M.user_id, M.id, M.visible, 
+                M.edited_at 
+              FROM messages M, users U 
+              WHERE M.thread_id=:id AND M.user_id=U.id AND M.visible=true 
+              ORDER BY M.id"""
     result = db.session.execute(sql, {"id":id})
     return result.fetchall()
 
 def get_thread_with_invisible(id):
-    sql = "SELECT M.content, U.username, M.created_at, M.user_id, M.id, M.visible, M.edited_at FROM messages M, users U " \
-          "WHERE M.thread_id=:id AND M.user_id=U.id ORDER BY M.id"
+    sql = """SELECT M.content, U.username, M.created_at, M.user_id, M.id, M.visible, 
+                M.edited_at 
+             FROM messages M, users U 
+             WHERE M.thread_id=:id AND M.user_id=U.id 
+             ORDER BY M.id"""
     result = db.session.execute(sql, {"id":id})
     return result.fetchall()
 
@@ -60,22 +71,27 @@ def add_thread(topic):
     user_id = users.user_id()
     if user_id == 0:
         return False
-    sql = "INSERT INTO threads (topic, user_id, created_at, visible) VALUES (:topic, :user_id, NOW(), true)"
+    sql = """INSERT INTO threads (topic, user_id, created_at, visible) 
+             VALUES (:topic, :user_id, NOW(), true)"""
     db.session.execute(sql, {"topic":topic, "user_id":user_id})
     db.session.commit()
     return True
 
 def get_threads():
     #TODO: order by the latest message of each thread
-    sql = "SELECT T.topic, U.username, T.created_at, T.user_id, T.id, T.visible FROM threads T, users U " \
-          "WHERE T.user_id=U.id AND T.visible=true ORDER BY T.created_at DESC"
+    sql = """SELECT T.topic, U.username, T.created_at, T.user_id, T.id, T.visible 
+             FROM threads T, users U 
+             WHERE T.user_id=U.id AND T.visible=true 
+             ORDER BY T.created_at DESC"""
     result = db.session.execute(sql)
     return result.fetchall()
 
 def get_threads_with_invisible():
     #TODO: order by the latest message of each thread
-    sql = "SELECT T.topic, U.username, T.created_at, T.user_id, T.id, T.visible FROM threads T, users U " \
-          "WHERE T.user_id=U.id ORDER BY T.created_at DESC"
+    sql = """SELECT T.topic, U.username, T.created_at, T.user_id, T.id, T.visible 
+             FROM threads T, users U 
+             WHERE T.user_id=U.id 
+             ORDER BY T.created_at DESC"""
     result = db.session.execute(sql)
     return result.fetchall()
 
@@ -108,18 +124,27 @@ def reply(id, content):
     user_id = users.user_id()
     if user_id == 0:
         return False
-    sql = "INSERT INTO messages (content, user_id, created_at, visible, thread_id) VALUES (:content, :user_id, NOW(), true, :thread_id)"
+    sql = """INSERT INTO messages (content, user_id, created_at, visible, thread_id) 
+             VALUES (:content, :user_id, NOW(), true, :thread_id)"""
     db.session.execute(sql, {"content":content, "user_id":user_id, "thread_id":id})
     db.session.commit()
     return True
 
 def result(query, order):
-    if (order=="ASC"):
-        sql = "SELECT M.content, U.username, M.created_at, M.user_id, M.id, M.visible, T.topic, T.id, M.edited_at FROM messages M, users U, threads T " \
-              "WHERE M.content LIKE :query AND M.user_id=U.id AND M.thread_id=T.id AND M.visible=true ORDER BY M.created_at ASC"
+    if order == "ASC":
+        sql = """SELECT M.content, U.username, M.created_at, M.user_id, M.id, 
+                    M.visible, T.topic, T.id, M.edited_at 
+                 FROM messages M, users U, threads T 
+                 WHERE M.content LIKE :query AND M.user_id=U.id AND M.thread_id=T.id 
+                 AND M.visible=true 
+                 ORDER BY M.created_at ASC"""
     else:
-        sql = "SELECT M.content, U.username, M.created_at, M.user_id, M.id, M.visible, T.topic, T.id, M.edited_at FROM messages M, users U, threads T " \
-          "WHERE M.content LIKE :query AND M.user_id=U.id AND M.thread_id=T.id AND M.visible=true ORDER BY M.created_at DESC"
+        sql = """SELECT M.content, U.username, M.created_at, M.user_id, M.id, 
+                    M.visible, T.topic, T.id, M.edited_at 
+                 FROM messages M, users U, threads T 
+                 WHERE M.content LIKE :query AND M.user_id=U.id AND M.thread_id=T.id 
+                 AND M.visible=true 
+                 ORDER BY M.created_at DESC"""
     result = db.session.execute(sql, {"query":"%"+query+"%"})
     return result.fetchall()
 
@@ -141,21 +166,25 @@ def get_message_attributes(id):
     return result.fetchone()
 
 def get_latest_messages():
-    sql = "SELECT M.content, U.username, M.created_at, M.user_id, M.id, M.visible, T.topic, T.id, M.edited_at FROM messages M, users U, threads T " \
-          "WHERE M.user_id=U.id AND M.thread_id=T.id AND M.visible=true ORDER BY M.created_at DESC LIMIT 3"
+    sql = """SELECT M.content, U.username, M.created_at, M.user_id, M.id, M.visible, 
+                T.topic, T.id, M.edited_at 
+             FROM messages M, users U, threads T 
+             WHERE M.user_id=U.id AND M.thread_id=T.id AND M.visible=true 
+             ORDER BY M.created_at DESC LIMIT 3"""
     result = db.session.execute(sql)
     return result.fetchall()
 
 def get_forums():
-    sql = "SELECT * FROM forums F " \
-          "ORDER BY F.name"
+    sql = "SELECT id, name, visibility FROM forums F ORDER BY F.name"
     result = db.session.execute(sql)
     return result.fetchall()
 
 def get_forum_threads(id):
     #TODO: order by the latest message of each thread
-    sql = "SELECT T.topic, U.username, T.created_at, T.user_id, T.id, T.visible FROM threads T, users U " \
-          "WHERE T.forum_id=:id AND T.user_id=U.id AND T.visible=true ORDER BY T.created_at DESC"
+    sql = """SELECT T.topic, U.username, T.created_at, T.user_id, T.id, T.visible 
+             FROM threads T, users U 
+             WHERE T.forum_id=:id AND T.user_id=U.id AND T.visible=true 
+             ORDER BY T.created_at DESC"""
     result = db.session.execute(sql, {"id":id})
     return result.fetchall()
 
@@ -168,7 +197,8 @@ def newthread(forum_id, title):
     user_id = users.user_id()
     if user_id == 0:
         return False
-    sql = "INSERT INTO threads (topic, user_id, created_at, visible, forum_id) VALUES (:topic, :user_id, NOW(), true, :forum_id)"
+    sql = """INSERT INTO threads (topic, user_id, created_at, visible, forum_id) 
+             VALUES (:topic, :user_id, NOW(), true, :forum_id)"""
     db.session.execute(sql, {"topic":title, "user_id":user_id, "forum_id":forum_id})
     db.session.commit()
     return True
