@@ -4,6 +4,24 @@
 - Create users, message threads and messages to interact with other users online.
 
 ---
+## P3
+
+### Nykytila
+- Aiempien toiminnallisuuksien lisäksi sovelluksessa voi nyt hakea viestejä, jotka sisältävät jonkin osamerkkijonon.
+- Käyttäjä voi muokata lähettämiään viestejä.
+- Jokainen viestiketju on osa jotakin foorumia/keskustelualuetta.
+- Syötteiden validointia ja sen näyttämistä käyttäjälle on kehitetty.
+- Käyttöliittymä lähestyy lopullista muotoaan, jossa koko sivustolla on käytössä yhteinen layout.
+
+### Heroku
+- https://cryptic-dusk-65765.herokuapp.com/
+- Admin-ominaisuudet käytössä seuraavalla tunnuksella ja salasanalla: admin / aaaaaaaa
+
+### Viimeisteltäviä
+- Bugien korjaaminen.
+- Ulkoasu.
+
+---
 
 ## P2
 ### Nykytila
