@@ -132,7 +132,7 @@ def threads():
 @app.route("/thread/<int:id>/delete")
 def deletethread(id):
     if messages.hide_thread(id):
-        return redirect("/threads")
+        return redirect("/")
     else:
         return render_template("error.html", message="Thread deletion failed.")
 

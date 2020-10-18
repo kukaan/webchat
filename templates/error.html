@@ -1,12 +1,12 @@
 {% extends "layout.html" %}
 {% block title %}Front page{% endblock %}
 {% block content %}
-Error: 
+<h2>Error:</h2> 
 {% if message %}
-    {{ message }}
+    <h3>{{ message }}</h3>
 {% else %}
     {% for message in messages %}
-       <br> {{ message }}
+       <br> <h3>{{ message }}</h3>
     {% endfor %}
 {% endif %}
 {% endblock %}

@@ -18,7 +18,7 @@
     {% endif %}
     <br>
     {% if session.is_admin %}
-    <i>Visibility:</i> {{ message[5] }} |
+    <i>Visibility:</i> {{ message[5] }} | <a href="/deletemessage/{{ message[4] }}">Delete</a>
     {% endif %}
     {% if session.user_id == message[3] %}
     <a href="/editmessage/{{ message[4] }}">Edit</a>

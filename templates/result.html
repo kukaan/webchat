@@ -26,11 +26,19 @@
     {% endif %}
     <p>
     {% if session.is_admin %}
-    <i>Visibility:</i> {{ message[5] }} |
-    {% endif %}
-    {% if session.user_id == message[3] %}
-    <a href="/editmessage/{{ message[4] }}">Edit</a>
-    | <a href="/deletemessage/{{ message[4] }}">Delete</a>
+        {% if message[6] %}
+            {% if session.user_id == message[3] %}
+                <a href="/editmessage/{{ message[4] }}">Edit</a>
+                | <a href="/deletemessage/{{ message[4] }}">Delete</a>
+            {% else %}
+                <a href="/deletemessage/{{ message[4] }}">Admin delete</a>
+            {% endif %}
+        {% else %}
+            <i>Deleted</i>
+        {% endif %}
+    {% elif session.user_id == message[3] %}
+        <a href="/editmessage/{{ message[4] }}">Edit</a>
+        | <a href="/deletemessage/{{ message[4] }}">Delete</a>
     {% endif %}
     <hr>
 {% endfor %}

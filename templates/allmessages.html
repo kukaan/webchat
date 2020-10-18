@@ -11,9 +11,17 @@
     <i>Time:</i> {{ message[2].strftime("%Y-%m-%d %H:%M:%S") }} UTC
     <br>
     {% if session.is_admin %}
-        <i>Visibility:</i> {{ message[5] }} |
-    {% endif %}
-    {% if session.user_id == message[3] %}
+        {% if message[5] %}
+            {% if session.user_id == message[3] %}
+                <a href="/editmessage/{{ message[4] }}">Edit</a>
+                | <a href="/deletemessage/{{ message[4] }}">Delete</a>
+            {% else %}
+                <a href="/deletemessage/{{ message[4] }}">Admin delete</a>
+            {% endif %}
+        {% else %}
+            <i>Deleted</i>
+        {% endif %}
+    {% elif session.user_id == message[3] %}
         <a href="/editmessage/{{ message[4] }}">Edit</a>
         | <a href="/deletemessage/{{ message[4] }}">Delete</a>
     {% endif %}
