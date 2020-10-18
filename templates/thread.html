@@ -9,14 +9,13 @@
 
 <hr>
 {% for message in messages %}
-    <i>Message:</i> {{ message[0] }}
-    <p>
-    <i>Sender:</i> {{ message[1] }}
-    <p>
-    <i>Time:</i> {{ message[2].strftime("%Y-%m-%d %H:%M:%S") }} UTC
+    <b>{{ message[1] }}</b>
+    <i>at</i> {{ message[2].strftime("%Y-%m-%d %H:%M:%S") }} UTC
     {% if message[6] != None %}
-     (edited at {{ message[6].strftime("%Y-%m-%d %H:%M:%S") }})
+     (<i>edited at</i> {{ message[6].strftime("%Y-%m-%d %H:%M:%S") }})
     {% endif %}
+    <p>
+    {{ message[0] }}
     <p>
     {% if session.is_admin %}
         {% if message[5] %}

@@ -4,25 +4,22 @@
 <hr>
 <h3>{{ count }} threads(s)</h3>
 <hr>
-{% for thread in threads %}
-<h4><a href="/thread/{{ thread[4] }}">{{ thread[0] }}</a></h4>
-    <p>
-    <i>Creator:</i> {{ thread[1] }}
-    <p>
-    <i>Time:</i> {{ thread[2].strftime("%Y-%m-%d %H:%M:%S") }} UTC
-    <p>
+{% for thread in threads %}    
+    <a href="/thread/{{ thread[4] }}">{{ thread[0] }}</a>
+    <i>by</i> <b>{{ thread[1] }}</b>
+    <i>at</i> {{ thread[2].strftime("%Y-%m-%d %H:%M:%S") }} UTC
     {% if session.is_admin %}
         {% if thread[5] %}
             {% if session.user_id == thread[3] %}
-                <a href="/deletethread/{{ thread[4] }}">Delete</a>
+                | <a href="/deletethread/{{ thread[4] }}">Delete</a>
             {% else %}
-                <a href="/deletethread/{{ thread[4] }}">Admin delete</a>
+                | <a href="/deletethread/{{ thread[4] }}">Admin delete</a>
             {% endif %}
         {% else %}
-            <i>Deleted</i>
+            | <i>Deleted</i>
         {% endif %}
     {% elif session.user_id == thread[3] %}
-        <a href="/deletethread/{{ thread[4] }}">Delete</a>
+        | <a href="/deletethread/{{ thread[4] }}">Delete</a>
     {% endif %}
     <hr>
 {% endfor %}

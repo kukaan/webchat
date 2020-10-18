@@ -3,26 +3,32 @@
 {% block content %}
 <hr>
 <h2>Latest messages</h2>
-<a href="/allmessages">Show all messages</a>
+<a href="/result?query=&order=DESC">Show all messages</a>
 <hr>
 {% for message in messages %}
-    <i>Thread:</i> <a href="/thread/{{ message[7] }}">{{ message[6] }}</a>
-    <br>
-    <i>Message:</i> {{ message[0] }}
-    <br>
-    <i>Sender:</i> {{ message[1] }}
-    <br>
-    <i>Time:</i> {{ message[2].strftime("%Y-%m-%d %H:%M:%S") }} UTC
+    <b>{{ message[1] }}</b>
+    <i>in</i> <a href="/thread/{{ message[7] }}">{{ message[6] }}</a>
+    <i>at</i> {{ message[2].strftime("%Y-%m-%d %H:%M:%S") }} UTC
     {% if message[8] != None %}
-     (edited at {{ message[8].strftime("%Y-%m-%d %H:%M:%S") }})
+     (<i>edited at</i> {{ message[8].strftime("%Y-%m-%d %H:%M:%S") }})
     {% endif %}
-    <br>
+    <p>
+    {{ message[0] }}
+    <p>
     {% if session.is_admin %}
-    <i>Visibility:</i> {{ message[5] }} | <a href="/deletemessage/{{ message[4] }}">Delete</a>
-    {% endif %}
-    {% if session.user_id == message[3] %}
-    <a href="/editmessage/{{ message[4] }}">Edit</a>
-    | <a href="/deletemessage/{{ message[4] }}">Delete</a>
+        {% if message[5] %}
+            {% if session.user_id == message[3] %}
+                <a href="/editmessage/{{ message[4] }}">Edit</a>
+                | <a href="/deletemessage/{{ message[4] }}">Delete</a>
+            {% else %}
+                <a href="/deletemessage/{{ message[4] }}">Admin delete</a>
+            {% endif %}
+        {% else %}
+            <i>Deleted</i>
+        {% endif %}
+    {% elif session.user_id == message[3] %}
+        <a href="/editmessage/{{ message[4] }}">Edit</a>
+        | <a href="/deletemessage/{{ message[4] }}">Delete</a>
     {% endif %}
     <hr>
 {% endfor %}

@@ -127,14 +127,28 @@ def reply(id, content):
 
 def result(query, order):
     if order == "ASC":
-        sql = """SELECT M.content, U.username, M.created_at, M.user_id, M.id, 
+        if users.is_admin():
+            sql = """SELECT M.content, U.username, M.created_at, M.user_id, M.id, 
+                    M.visible, T.topic, T.id, M.edited_at 
+                 FROM messages M, users U, threads T 
+                 WHERE M.content LIKE :query AND M.user_id=U.id AND M.thread_id=T.id 
+                 ORDER BY M.created_at ASC"""
+        else:
+            sql = """SELECT M.content, U.username, M.created_at, M.user_id, M.id, 
                     M.visible, T.topic, T.id, M.edited_at 
                  FROM messages M, users U, threads T 
                  WHERE M.content LIKE :query AND M.user_id=U.id AND M.thread_id=T.id 
                  AND M.visible=true 
                  ORDER BY M.created_at ASC"""
     else:
-        sql = """SELECT M.content, U.username, M.created_at, M.user_id, M.id, 
+        if users.is_admin():
+            sql = """SELECT M.content, U.username, M.created_at, M.user_id, M.id, 
+                    M.visible, T.topic, T.id, M.edited_at 
+                 FROM messages M, users U, threads T 
+                 WHERE M.content LIKE :query AND M.user_id=U.id AND M.thread_id=T.id 
+                 ORDER BY M.created_at DESC"""
+        else:
+            sql = """SELECT M.content, U.username, M.created_at, M.user_id, M.id, 
                     M.visible, T.topic, T.id, M.edited_at 
                  FROM messages M, users U, threads T 
                  WHERE M.content LIKE :query AND M.user_id=U.id AND M.thread_id=T.id 
