@@ -8,10 +8,6 @@ def append_string_length_error(list, string, stringname, min_length, max_length)
     elif len(string) > max_length:
         list.append(f"The {stringname} is too long")
 
-@app.route("/new")
-def new():
-    return render_template("new.html")
-
 @app.route("/send", methods=["POST"])
 def send():
     content = request.form["content"]
@@ -105,21 +101,6 @@ def thread(id):
     return render_template("thread.html", count=len(list), messages=list, id=id, 
             thread_attributes=thread_attributes)
 
-@app.route("/newthread", methods=["GET", "POST"])
-def newthread():
-    if request.method == "GET":
-        return render_template("newthread.html")
-    if request.method == "POST":
-        topic = request.form["topic"]
-        error_messages = []
-        append_string_length_error(error_messages, topic, "topic", 1, 30)
-        if len(error_messages) > 0:
-            return render_template("error.html", messages=error_messages)
-        if threads.add_thread(topic):
-            return redirect("threads")
-        else:
-            return render_template("error.html", message="Thread creation failed.")
-
 @app.route("/threads")
 def get_threads():
     if users.is_admin():
@@ -174,14 +155,6 @@ def editmessage(id):
             return redirect("/thread/"+str(attributes[1]))
         else:
             return render_template("error.html", message="Failed to edit the message.")
-
-@app.route("/allmessages")
-def allmessages():
-    if users.is_admin():
-        list = messages.get_list_with_invisible()
-    else:
-        list = messages.get_list()
-    return render_template("allmessages.html", count=len(list), messages=list)
 
 @app.route("/")
 def index():
