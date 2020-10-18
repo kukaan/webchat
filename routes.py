@@ -77,7 +77,6 @@ def profile(id):
         allow = True
     if allow:
         user = users.get_user(id)
-        #TODO: check that user_id exists
         if user == None:
             return render_template("error.html", 
                     message=f"No user with id {id} exists.")

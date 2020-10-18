@@ -39,8 +39,6 @@ def hide(id):
     elif users.user_id() == get_user_id(id):
         allow = True
     
-    #print("logged user: "+str(users.user_id())+"; message sender: "+str(get_user_id(id)))
-    
     if allow:
         sql = "UPDATE messages SET visible=false WHERE id=:id"
         db.session.execute(sql, {"id":id})
@@ -78,7 +76,6 @@ def add_thread(topic):
     return True
 
 def get_threads():
-    #TODO: order by the latest message of each thread
     sql = """SELECT T.topic, U.username, T.created_at, T.user_id, T.id, T.visible 
              FROM threads T, users U 
              WHERE T.user_id=U.id AND T.visible=true 
@@ -87,7 +84,6 @@ def get_threads():
     return result.fetchall()
 
 def get_threads_with_invisible():
-    #TODO: order by the latest message of each thread
     sql = """SELECT T.topic, U.username, T.created_at, T.user_id, T.id, T.visible 
              FROM threads T, users U 
              WHERE T.user_id=U.id 
@@ -111,7 +107,6 @@ def hide_thread(id):
         allow = True
     elif users.user_id() == get_thread_user_id(id):
         allow = True
-    #print("logged user: "+str(users.user_id())+"; thread creator: "+str(get_user_id(id)))
     if allow:
         sql = "UPDATE threads SET visible=false WHERE id=:id"
         db.session.execute(sql, {"id":id})
@@ -180,7 +175,6 @@ def get_forums():
     return result.fetchall()
 
 def get_forum_threads(id):
-    #TODO: order by the latest message of each thread
     sql = """SELECT T.topic, U.username, T.created_at, T.user_id, T.id, T.visible 
              FROM threads T, users U 
              WHERE T.forum_id=:id AND T.user_id=U.id AND T.visible=true 
