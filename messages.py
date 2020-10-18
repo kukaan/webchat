@@ -108,6 +108,11 @@ def hide_thread(id):
     elif users.user_id() == get_thread_user_id(id):
         allow = True
     if allow:
+        thread = get_thread(id)
+        for message in thread:
+            sql = "UPDATE messages SET visible=false WHERE id=:message"
+            db.session.execute(sql, {"message":message[4]})
+            db.session.commit()
         sql = "UPDATE threads SET visible=false WHERE id=:id"
         db.session.execute(sql, {"id":id})
         db.session.commit()

@@ -13,15 +13,15 @@
     {% if session.is_admin %}
         {% if thread[5] %}
             {% if session.user_id == thread[3] %}
-                | <a href="/deletethread/{{ thread[4] }}">Delete</a>
+                | <a href="/thread/{{ thread[4] }}/delete">Delete</a>
             {% else %}
-                | <a href="/deletethread/{{ thread[4] }}">Admin delete</a>
+                | <a href="/thread/{{ thread[4] }}/delete">Admin delete</a>
             {% endif %}
         {% else %}
             | <i>Deleted</i>
         {% endif %}
     {% elif session.user_id == thread[3] %}
-        | <a href="/deletethread/{{ thread[4] }}">Delete</a>
+        | <a href="/thread/{{ thread[4] }}/delete">Delete</a>
     {% endif %}
     <hr>
 {% endfor %}
