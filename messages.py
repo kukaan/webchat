@@ -131,13 +131,13 @@ def result(query, order):
             sql = """SELECT M.content, U.username, M.created_at, M.user_id, M.id, 
                     M.visible, T.topic, T.id, M.edited_at 
                  FROM messages M, users U, threads T 
-                 WHERE M.content LIKE :query AND M.user_id=U.id AND M.thread_id=T.id 
+                 WHERE (M.content ILIKE :query OR T.topic ILIKE :query) AND M.user_id=U.id AND M.thread_id=T.id 
                  ORDER BY M.created_at ASC"""
         else:
             sql = """SELECT M.content, U.username, M.created_at, M.user_id, M.id, 
                     M.visible, T.topic, T.id, M.edited_at 
                  FROM messages M, users U, threads T 
-                 WHERE M.content LIKE :query AND M.user_id=U.id AND M.thread_id=T.id 
+                 WHERE (M.content ILIKE :query OR T.topic ILIKE :query) AND M.user_id=U.id AND M.thread_id=T.id 
                  AND M.visible=true 
                  ORDER BY M.created_at ASC"""
     else:
@@ -145,15 +145,25 @@ def result(query, order):
             sql = """SELECT M.content, U.username, M.created_at, M.user_id, M.id, 
                     M.visible, T.topic, T.id, M.edited_at 
                  FROM messages M, users U, threads T 
-                 WHERE M.content LIKE :query AND M.user_id=U.id AND M.thread_id=T.id 
+                 WHERE (M.content ILIKE :query OR T.topic ILIKE :query) AND M.user_id=U.id AND M.thread_id=T.id 
                  ORDER BY M.created_at DESC"""
         else:
             sql = """SELECT M.content, U.username, M.created_at, M.user_id, M.id, 
                     M.visible, T.topic, T.id, M.edited_at 
                  FROM messages M, users U, threads T 
-                 WHERE M.content LIKE :query AND M.user_id=U.id AND M.thread_id=T.id 
+                 WHERE (M.content ILIKE :query OR T.topic ILIKE :query) AND M.user_id=U.id AND M.thread_id=T.id 
                  AND M.visible=true 
                  ORDER BY M.created_at DESC"""
+
+    # this would be better, but doesn't work for some reason
+    #sql = """SELECT M.content, U.username, M.created_at, M.user_id, M.id, 
+    #                M.visible, T.topic, T.id, M.edited_at 
+    #             FROM messages M, users U, threads T 
+    #             WHERE (M.content ILIKE :query OR T.topic ILIKE :query) AND M.user_id=U.id AND M.thread_id=T.id 
+    #             AND M.visible=true 
+    #             ORDER BY M.created_at :order"""
+    #result = db.session.execute(sql, {"query":"%"+query+"%", "order":"%"+order+"%"})
+
     result = db.session.execute(sql, {"query":"%"+query+"%"})
     return result.fetchall()
 
