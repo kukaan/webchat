@@ -1,6 +1,6 @@
 from app import app
 from flask import render_template, redirect, request
-import messages, users
+import messages, users, threads, forums
 
 def append_string_length_error(list, string, stringname, min_length, max_length):
     if len(string) < min_length:
@@ -98,10 +98,10 @@ def deletemessage(id):
 @app.route("/thread/<int:id>")
 def thread(id):
     if users.is_admin():
-        list = messages.get_thread_with_invisible(id)
+        list = threads.get_thread_with_invisible(id)
     else:
-        list = messages.get_thread(id)
-    thread_attributes = messages.get_thread_attributes(id)
+        list = threads.get_thread(id)
+    thread_attributes = threads.get_thread_attributes(id)
     return render_template("thread.html", count=len(list), messages=list, id=id, 
             thread_attributes=thread_attributes)
 
@@ -115,22 +115,22 @@ def newthread():
         append_string_length_error(error_messages, topic, "topic", 1, 30)
         if len(error_messages) > 0:
             return render_template("error.html", messages=error_messages)
-        if messages.add_thread(topic):
+        if threads.add_thread(topic):
             return redirect("threads")
         else:
             return render_template("error.html", message="Thread creation failed.")
 
 @app.route("/threads")
-def threads():
+def get_threads():
     if users.is_admin():
-        list = messages.get_threads_with_invisible()
+        list = threads.get_threads_with_invisible()
     else:
-        list = messages.get_threads()
+        list = threads.get_threads()
     return render_template("threads.html", count=len(list), threads=list)
 
 @app.route("/thread/<int:id>/delete")
 def deletethread(id):
-    if messages.hide_thread(id):
+    if threads.hide_thread(id):
         return redirect("/")
     else:
         return render_template("error.html", message="Thread deletion failed.")
@@ -142,7 +142,7 @@ def reply(id):
     append_string_length_error(error_messages, content, "message", 1, 1000)
     if len(error_messages) > 0:
         return render_template("error.html", messages=error_messages)
-    if messages.reply(id, content):
+    if threads.reply(id, content):
         return redirect("/thread/"+str(id))
     else:
         return render_template("error.html", message="Sending message failed.")
@@ -186,14 +186,14 @@ def allmessages():
 @app.route("/")
 def index():
     latest = messages.get_latest_messages()
-    forums = messages.get_forums()
+    forum_list = forums.get_forums()
     return render_template("index.html", count=len(latest), messages=latest, 
-            forums=forums)
+            forums=forum_list)
 
 @app.route("/forum/<int:id>")
 def forum(id):
-    threads = messages.get_forum_threads(id)
-    attributes = messages.get_forum_attributes(id)
+    threads = forums.get_forum_threads(id)
+    attributes = forums.get_forum_attributes(id)
     return render_template("forum.html", count=len(threads), threads=threads, id=id, 
             attributes=attributes)
 
@@ -204,7 +204,7 @@ def forum_newthread(id):
     append_string_length_error(error_messages, content, "message", 1, 60)
     if len(error_messages) > 0:
         return render_template("error.html", messages=error_messages)
-    if messages.newthread(id, content):
+    if forums.newthread(id, content):
         return redirect("/forum/"+str(id))
     else:
         return render_template("error.html", message="Thread creation failed failed.")
